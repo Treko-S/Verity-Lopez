@@ -52,6 +52,10 @@ public class LopezPackets {
                         LopezConfig.get().trollLevel = lvl;
                         LopezConfig.save();
                         player.sendSystemMessage(Component.literal("§6[López] §eNivel de maldad: §c" + lvl + "/10"));
+                    } else if ("cycle_skin".equals(action)) {
+                        int next = (lopez.getVariant() + 1) % 4;
+                        lopez.setVariant(next);
+                        player.sendSystemMessage(Component.literal("§6[López] §eTraje cambiado a: " + lopez.getVariantName()));
                     }
                 }
             });

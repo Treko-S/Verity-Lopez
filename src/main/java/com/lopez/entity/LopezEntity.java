@@ -11,6 +11,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -51,9 +54,48 @@ import java.util.List;
 import java.util.Random;
 
 public class LopezEntity extends TamableAnimal {
+    private static final EntityDataAccessor<Integer> DATA_VARIANT_ID = SynchedEntityData.defineId(LopezEntity.class, EntityDataSerializers.INT);
+
     private int prankCooldownTicks = 20 * 120; // 2 minutos
     private final String race = "LOPEZ";
     private static final Random RANDOM = new Random();
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_VARIANT_ID, 0);
+    }
+
+    public int getVariant() {
+        return this.entityData.get(DATA_VARIANT_ID);
+    }
+
+    public void setVariant(int variant) {
+        this.entityData.set(DATA_VARIANT_ID, variant);
+    }
+
+    public String getVariantName() {
+        return switch (this.getVariant()) {
+            case 1 -> "§6Ámbar Fuego Dorado";
+            case 2 -> "§9Azul Cobalto & Zafiro";
+            case 3 -> "§8Stealth Carbón & Grafito";
+            default -> "§cRojo Clásico";
+        };
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putInt("LopezVariant", this.getVariant());
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (tag.contains("LopezVariant")) {
+            this.setVariant(tag.getInt("LopezVariant"));
+        }
+    }
 
     private static final String[] FREE_WILL_COMMENTS = {
             "Che compa, ¿cuánto falta para el asado?",
@@ -184,7 +226,9 @@ public class LopezEntity extends TamableAnimal {
         if (clone != null) {
             clone.moveTo(this.getX() + 1.2, this.getY(), this.getZ() + 1.2, this.getYRot(), 0);
             clone.tame(owner);
-            clone.setCustomName(Component.literal("§6§lLópez Clon"));
+            int newVariant = this.random.nextInt(3) + 1; // 1 = warm, 2 = blue, 3 = dark
+            clone.setVariant(newVariant);
+            clone.setCustomName(Component.literal("§6§lLópez Clon (" + clone.getVariantName() + "§6)"));
             level.addFreshEntity(clone);
             level.sendParticles(ParticleTypes.EXPLOSION, clone.getX(), clone.getY() + 1, clone.getZ(), 8, 0.4, 0.4, 0.4, 0.05);
             owner.playNotifySound(SoundEvents.ZOMBIE_VILLAGER_CONVERTED, SoundSource.PLAYERS, 1.0F, 1.2F);

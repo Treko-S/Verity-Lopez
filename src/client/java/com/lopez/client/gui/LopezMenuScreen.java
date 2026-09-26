@@ -100,10 +100,15 @@ public class LopezMenuScreen extends Screen {
         }).bounds(centerX - 120, startY + gap * 5, 240, 20).build();
         this.addRenderableWidget(trollButton);
 
-        // 7. Botón: Cerrar
+        // 7. Botón: Cambiar Traje / Skin (Rojo, Ámbar, Azul, Stealth)
+        this.addRenderableWidget(Button.builder(Component.literal("🎭 Cambiar Traje (Skin de Jugador)"), b -> {
+            sendAction("cycle_skin");
+        }).bounds(centerX - 120, startY + gap * 6, 240, 20).build());
+
+        // 8. Botón: Cerrar
         this.addRenderableWidget(Button.builder(Component.literal("Cerrar"), b -> {
             this.onClose();
-        }).bounds(centerX - 60, startY + gap * 6 + 6, 120, 20).build());
+        }).bounds(centerX - 60, startY + gap * 7 + 4, 120, 20).build());
     }
 
     private void sendAction(String action) {
