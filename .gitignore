@@ -1,0 +1,43 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+
+# Eclipse
+*.launch
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VSCode
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# OS
+*.DS_Store
+Thumbs.db
+
+# Fabric runtime
+run/
+
+# Java crashes and dumps
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+*.log
+
+# Audio and temporary test artifacts
+*.wav
+*.mp3
+
+# Local configuration files with private API keys
+config/
+run/config/
